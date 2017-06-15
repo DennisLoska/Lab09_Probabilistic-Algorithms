@@ -6,7 +6,7 @@ public class Probabilistic {
     private static final int WIDTH = 10000;
     private static final int HEIGHT = 10000;
     private static int random = (int) (Math.random() * (WIDTH));
-    private static double volume_A = Math.PI*(RADIUS*RADIUS);
+    private static double volume_A = Math.PI * (RADIUS * RADIUS);
     private static double inside = 0;
     private static double all = 0;
 
@@ -21,7 +21,22 @@ public class Probabilistic {
     }
 
     private static void computePi(int random) {
-        //TODO implement this method @Tony
+        // pi = 4(1 - 1/3 + 1/5 - 1/7 + 1/9 - 1/11 + ... + 1/2n-1 - 1/2n+1)
+
+        double pi = 0.0;
+        double zaehler = 1;
+
+        for (int i = 0; i < random; i++) {
+            if (i % 2 == 0) {
+                pi = pi + (1.0 / zaehler);
+            } else {
+                pi = pi - (1.0 / zaehler);
+            }
+        zaehler += 2;
+        }
+        pi = pi * 4.0;
+        System.out.println(random);
+        System.out.println("Pi: " + pi);
     }
 
     //AUFGABE 1.2
@@ -40,22 +55,20 @@ public class Probabilistic {
         int deltaY = (int) (rndPoint.getY()) - circleMidY;
         //Hypotenuse
         double d = Math.pow(deltaX, 2) + Math.pow(deltaY, 2);
-        if (d < RADIUS * RADIUS)
-            return true;
-        else return false;
+        return d < RADIUS * RADIUS;
     }
 
     //AUFGABE 1.4
-    private static void calcRatio(Point2D rndP){
+    private static void calcRatio(Point2D rndP) {
         if (isInCircle(rndP))
             inside++;
         all++;
     }
 
     //AUFGABE 1.4
-    private static void displayRatio(){
+    private static void displayRatio() {
         System.out.println("\nIN: " + inside + " ALL: " + all);
-        System.out.println("\nVerhältnis von Punkten IN/NICHT-IN Kreis: IN/ALL= " + all/inside);
+        System.out.println("\nVerhältnis von Punkten IN/NICHT-IN Kreis: IN/ALL= " + all / inside);
     }
 
     //AUFGABE 1.5
