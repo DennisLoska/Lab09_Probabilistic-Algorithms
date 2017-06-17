@@ -1,6 +1,9 @@
 package philosophersProblem;
 
+import java.lang.Thread.State;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 /*
@@ -14,6 +17,7 @@ public class Philosopher implements Runnable{
 	int seatNumber;
 	boolean hasLeftFork = false;
 	boolean hasRightFork = false;
+	private State state;
 	
 	
 	public Philosopher(String name, int seatNumber){
@@ -22,52 +26,55 @@ public class Philosopher implements Runnable{
 	}
 	
 	public void run(){
-		boolean printedLeft = false;
-		boolean printedRight = false;
 		while(true){
-		if(checkLeftFork()){
-			takeLeftFork();
-			hasLeftFork = true;
-		}else{
-			if(!printedLeft){
-				System.out.println(seatNumber +name + " waits for the leftFork");
-				printedLeft = true;
+			synchronized(this){
+		    	if(checkLeftFork()){
+					takeLeftFork();
+					hasLeftFork = true;
+				}else{
+						System.out.println(seatNumber +name + " waits for the leftFork");	
+				}
+				if(checkRightFork()){
+					takeRightFork();
+					hasRightFork = true;
+				}else{
+						System.out.println(seatNumber +name + " waits for the rightFork");
+				}
+				
+				if(hasRightFork&&hasLeftFork){
+					eat();
+				}else{
+					try {
+						wait(2000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			}
 		}
-		if(checkRightFork()){
-			takeRightFork();
-			hasRightFork = true;
-		}else{
-			if(!printedRight){
-				System.out.println(seatNumber +name + " waits for the rightFork");
-				printedRight = true;
-			}
-		}
-		
-		if(hasRightFork&&hasLeftFork){
-			eat();
-			printedLeft = false;
-			printedRight = false;
-		}
-			
-		}
-		//delights himself with the delicate dish
-		
 	}
-	public synchronized void eat(){
+		//delights himself with the delicate dish
+	public void eat(){
 		System.out.println(seatNumber +name + " eats");
 		try {
-			TimeUnit.SECONDS.sleep(4);
+			wait(2000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		System.out.println(seatNumber + name + " has finished eating");
 		putDownLeftFork();
-		System.out.println(seatNumber +name + " puts down the left fork");
+		//System.out.println(seatNumber +name + " puts down the left fork");
 		putDownRightFork();
-		System.out.println(seatNumber +name + " puts down the right fork");
+		//System.out.println(seatNumber +name + " puts down the right fork");
 	}
+	
+	/*private void setPhilosopherState(State state){
+        this.state = state;
+        System.out.println(System.currentTimeMillis() +":"+ state +", "+ name+";");
+    }
+    */
 	
 	public boolean checkLeftFork(){
 		if(PhilosophersTable.getForkArray()[(seatNumber-1)]==1)return true;
@@ -90,36 +97,5 @@ public class Philosopher implements Runnable{
 		PhilosophersTable.setForkArray(seatNumber-1, 1);
 	}
 	
-	/*
-	  //threadcode //Lebenscode eines philosophers
 	
-	while(true){
-		//getting hungry
-		if(!countedTimeToGetHungry){
-		timeUntilHungry = (randomer.nextInt(126)+5)*1000;
-		System.out.println(timeUntilHungry);
-		countedTimeToGetHungry = true;
-		System.out.println(name + " is thinking");
-		}else{
-			//eat
-			if(System.currentTimeMillis()-timeSinceLastEaten==timeUntilHungry){
-				System.out.println(name + " is hungry;");
-				if(checkLeftFork(seatNumber)){
-					takeLeftFork(seatNumber);
-					System.out.println(name + " takes the left fork");
-				}else{
-					waitingForLeftFork=true;
-					System.out.println(name + " is waiting for the left fork");
-				}
-				if(checkRightFork(seatNumber)){
-					takeRightFork(seatNumber);
-					System.out.println(name + " takes the right fork");
-				}else{
-					waitingForRightFork=true;
-					System.out.println(name + " is waiting for the right fork");
-				}
-			}
-		}
-	}
-	 */
 }

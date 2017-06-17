@@ -1,5 +1,7 @@
 package philosophersProblem;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 public class PhilosophersTable {
@@ -38,7 +40,23 @@ public class PhilosophersTable {
 		phil4.start();
 		phil5.start();
 		
-		while(true){
+		/*class DisplayState extends TimerTask {
+		    public void run() {
+		    	System.out.println(phil1.getState());
+				System.out.println(phil2.getState());
+				System.out.println(phil3.getState());
+				System.out.println(phil4.getState());
+				System.out.println(phil5.getState());
+				System.out.println("");
+		    }
+		}	
+
+		Timer timer = new Timer();
+		timer.schedule(new DisplayState(), 0, 2000);
+		*/
+		
+		
+		/*while(true){
 			for(int i=0;i<5;i++){
 				phil1.setPriority((5+i)%5+1);
 				phil1.setPriority((4+i)%5+1);
@@ -53,9 +71,9 @@ public class PhilosophersTable {
 				}
 				System.out.println("\n");
 			}
-		}
+		}*/
 		
-		}
+	}
 	
 	public static synchronized int[] getForkArray(){
 		return forkArray;
@@ -63,6 +81,8 @@ public class PhilosophersTable {
 	public static synchronized void setForkArray(int index, int value){
 		forkArray[index] = value;
 	}
+	
+	
 	//zwei alghorythmen um den deadlock zu vermeiden: 
 	// 1. random entscheiden welcher Thread durckommt un welcher yield
 	// oder nummerieren
