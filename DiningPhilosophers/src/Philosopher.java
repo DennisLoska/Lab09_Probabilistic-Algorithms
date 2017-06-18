@@ -7,7 +7,9 @@ public class Philosopher implements Runnable {
     private int ID;
     private Random rand;
     private Statistics stats;
-
+    private long startTime;
+    private long endTime;
+    private long duration;
 
 
     Philosopher(int ID, Fork leftFork, Fork rightFork) {
@@ -20,21 +22,32 @@ public class Philosopher implements Runnable {
         stats = new Statistics();
     }
 
-
-
     @Override
     public void run() {
+        startTime = System.currentTimeMillis();
+
         while (true) {
+
             think();
-            synchronized (leftFork) {
+            synchronized (this) {
                 take_leftFork();
-                synchronized (rightFork) {
+                synchronized (this) {
                     take_rightFork();
                     eat();
                 }
             }
             drop_leftFork();
             drop_rightFork();
+
+            endTime = System.currentTimeMillis();
+            duration = endTime - startTime;
+            System.out.println(duration);
+
+            if (duration > 5000) {
+                stats.printEatStats();
+                System.out.println(Thread.currentThread().getName() + " : is going to shutdown!");
+                Thread.currentThread().stop();
+            }
         }
     }
 
@@ -65,7 +78,7 @@ public class Philosopher implements Runnable {
 
     private void eat() {
         System.out.println(getFullInfo() + " is eating");
-        stats.increaseEatCounter(this);
+        stats.increaseEatCounter(this.ID);
         halt();
         System.out.println(getFullInfo() + " has stopped eating");
     }
@@ -79,7 +92,7 @@ public class Philosopher implements Runnable {
     private void halt() {
         try {
 //            Thread.sleep(100);
-            Thread.sleep(rand.nextInt(100));
+            Thread.sleep(rand.nextInt(10));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -91,8 +104,12 @@ public class Philosopher implements Runnable {
         return result;
     }
 
-    int getID(){
+    int getID() {
         return this.ID;
+
     }
 
+    public long getDuration() {
+        return duration;
+    }
 }

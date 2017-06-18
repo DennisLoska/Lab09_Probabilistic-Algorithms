@@ -1,13 +1,16 @@
 
-public class DiningTable {
+public class DiningTable{
 
-    private Philosopher[] philosophers = new Philosopher[5];
+    private static Philosopher[] philosophers = new Philosopher[5];
+    private static Statistics stats;
     private Fork[] forks = new Fork[5];
+    private Thread[] threads = new Thread[5];
 
     private Fork leftFork;
     private Fork rightFork;
 
     private DiningTable() {
+        stats = new Statistics();
     }
 
     public static void main(String[] args) {
@@ -16,6 +19,7 @@ public class DiningTable {
     }
 
     private void init() {
+
         for (int i = 0; i < forks.length; i++){
             forks[i] = new Fork(i);
         }
@@ -26,9 +30,14 @@ public class DiningTable {
 
             philosophers[i] = new Philosopher(i, leftFork, rightFork);
 
-            Thread t = new Thread(philosophers[i]);
-            t.start();
+            threads[i] = new Thread (philosophers[i]);
+            threads[i].start();
+
         }
+    }
+
+    static Philosopher getPhilosopher(int i){
+        return philosophers[i];
     }
 
 }

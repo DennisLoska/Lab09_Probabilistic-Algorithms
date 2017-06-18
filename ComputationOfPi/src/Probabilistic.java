@@ -5,7 +5,7 @@ public class Probabilistic {
     private static final int RADIUS = 5000;
     private static final int WIDTH = 10000;
     private static final int HEIGHT = 10000;
-    private static int iterations = 10000;
+    private static int iterations = 10000000;
     private static int random = (int) (Math.random() * (WIDTH));
     private static double volume_A = Math.PI * (RADIUS * RADIUS);
     private static double inside = 0;
